@@ -16,8 +16,6 @@ const CrowdCircle: React.FC<CrowdCircleProps> = ({
   onClick,
   selected,
 }) => {
-  const occupancyPercentage = (crowdLevel / capacity) * 100;
-
   if (selected) {
     return (
       <div
@@ -35,13 +33,6 @@ const CrowdCircle: React.FC<CrowdCircleProps> = ({
           <div className="mt-2 font-semibold">
             {crowdLevel}/{capacity}
           </div>
-
-          {/* <div className="mt-2 h-1 w-full bg-blue-500">
-          <div
-            className="h-full bg-blue-900"
-            style={{ width: `${occupancyPercentage}%` }}
-          ></div>
-        </div> */}
         </div>
       </div>
     );
