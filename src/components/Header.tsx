@@ -14,10 +14,18 @@ const Header: React.FC = () => {
         </div>
       </Link>
       <nav className="flex items-center gap-x-4 text-3xl font-semibold">
-        <a href="https://github.com/zsh-eng">
+        <a
+          href="https://github.com/zsh-eng"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <FaGithub className="transition hover:scale-110" />
         </a>
-        <a href="https://www.linkedin.com/in/cheng-zhi-sheng/">
+        <a
+          href="https://www.linkedin.com/in/cheng-zhi-sheng/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <FaLinkedin className="transition hover:scale-110" />
         </a>
       </nav>
