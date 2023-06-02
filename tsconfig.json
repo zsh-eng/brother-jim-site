@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "src/pages/api/trpc/data.js"  ],
   "exclude": ["node_modules"]
 }
