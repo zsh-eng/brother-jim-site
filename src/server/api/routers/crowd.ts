@@ -6,6 +6,8 @@ import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 import dayjs from "dayjs";
 
+import { LOCATIONS } from "~/pages/constants";
+
 const client = new DynamoDBClient({
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
@@ -16,14 +18,21 @@ const client = new DynamoDBClient({
 
 const docClient = DynamoDBDocumentClient.from(client);
 
-const CrowdData = z.object({
+const rawCrowdDataSchema = z.object({
   location: z.number(),
   timestamp: z.string(),
   capacity: z.string(),
   crowd_level: z.string(),
 });
 
-const makeQueryParams = (locationId: number) => ({
+const START_HOUR = 7;
+const DATETIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
+
+const makeQueryParams = (
+  locationId: LocationId,
+  startTime: string,
+  endTime: string
+) => ({
   TableName: "brother-jim-table",
   KeyConditionExpression:
     "#location = :location AND #timestamp BETWEEN :tStart and :tEnd",
@@ -33,37 +42,85 @@ const makeQueryParams = (locationId: number) => ({
   },
   ExpressionAttributeValues: {
     ":location": locationId,
-    ":tStart": dayjs()
-      .startOf("day")
-      .subtract(1, "day")
-      .set("hour", 7)
-      .format("YYYY-MM-DD HH:mm:ss"),
-    ":tEnd": dayjs().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+    ":tStart": startTime,
+    ":tEnd": endTime,
   },
 });
 
-export const crowdRouter = createTRPCRouter({
-  crowdLevel: publicProcedure
-    .input(z.number())
-    .query(async ({ input: locationId }) => {
-      const params = makeQueryParams(locationId);
-      const { Items } = await docClient.send(new QueryCommand(params));
-      if (!Items) return [];
+const makePresentQuery = (locationId: LocationId) => {
+  return makeQueryParams(
+    locationId,
+    dayjs().startOf("day").set("hour", START_HOUR).format(DATETIME_FORMAT),
+    dayjs().format(DATETIME_FORMAT)
+  );
+};
 
-      // Validate the first item with Zod
-      try {
-        const res = Items.map((item) => CrowdData.parse(item)).map((item) => {
-          return {
-            location: item.location,
-            timestamp: item.timestamp,
-            capacity: parseInt(item.capacity),
-            crowd_level: parseInt(item.crowd_level),
-          };
-        });
-        return res;
-      } catch (err) {
-        console.error(err);
-        return [];
-      }
-    }),
+const makePastQuery = (locationId: LocationId) => {
+  return makeQueryParams(
+    locationId,
+    dayjs()
+      .startOf("day")
+      .subtract(1, "week")
+      .set("hour", START_HOUR)
+      .format(DATETIME_FORMAT),
+    dayjs().startOf("day").subtract(6, "days").format(DATETIME_FORMAT)
+  );
+};
+
+const getCrowdForId = async (locationId: LocationId) => {
+  const presentQuery = makePresentQuery(locationId);
+  const pastQuery = makePastQuery(locationId);
+
+  const [presentRes, pastRes] = await Promise.all([
+    docClient.send(new QueryCommand(presentQuery)),
+    docClient.send(new QueryCommand(pastQuery)),
+  ]);
+
+  const presentItems = presentRes.Items ?? [];
+  const pastItems = pastRes.Items ?? [];
+
+  const presentData: RawCrowdData[] = presentItems.map((item) =>
+    rawCrowdDataSchema.parse(item)
+  );
+  const pastData: RawCrowdData[] = pastItems.map((item) =>
+    rawCrowdDataSchema.parse(item)
+  );
+
+  const presentCrowd: ProcessedCrowdData[] = presentData.map((item) => {
+    return {
+      timestamp: item.timestamp,
+      capacity: parseInt(item.capacity),
+      crowd_level: parseInt(item.crowd_level),
+    };
+  });
+
+  const pastCrowd: ProcessedCrowdData[] = pastData.map((item) => {
+    return {
+      timestamp: item.timestamp,
+      capacity: parseInt(item.capacity),
+      crowd_level: parseInt(item.crowd_level),
+    };
+  });
+
+  return {
+    locationId,
+    presentCrowd: presentCrowd,
+    pastWeekCrowd: pastCrowd,
+  };
+};
+
+export const crowdRouter = createTRPCRouter({
+  crowdLevel: publicProcedure.query(async () => {
+    const queryPromises = Object.values(LOCATIONS).map(({ locationId }) =>
+      getCrowdForId(locationId)
+    );
+
+    const apiResponse: CrowdApiRes = {};
+    const results = await Promise.all(queryPromises);
+    results.forEach((res) => {
+      apiResponse[res.locationId] = res;
+    });
+
+    return apiResponse;
+  }),
 });

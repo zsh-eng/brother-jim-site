@@ -4,9 +4,9 @@ import CrowdCircle from "./CrowdCircle";
 import { FaMapMarkedAlt } from "react-icons/fa";
 
 interface SidebarProps {
-  index: number;
-  setIndex: (index: number) => void;
-  currentCrowd: number[];
+  index: LocationId;
+  setIndex: (index: LocationId) => void;
+  currentCrowd: { [key in LocationId]?: number };
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ index, setIndex, currentCrowd }) => {
@@ -16,14 +16,14 @@ const Sidebar: React.FC<SidebarProps> = ({ index, setIndex, currentCrowd }) => {
         <FaMapMarkedAlt className="h-4 w-8 text-white" />
         <div className="text-3xl font-bold text-white">Locations</div>
       </div>
-      {LOCATIONS.map(({ name, capacity }, i) => (
+      {Object.values(LOCATIONS).map(({ name, capacity, locationId }) => (
         <CrowdCircle
           key={name}
           location={name}
           capacity={capacity}
-          crowdLevel={currentCrowd[i] ?? 0}
-          onClick={() => setIndex(i)}
-          selected={i === index}
+          crowdLevel={currentCrowd[locationId] ?? 0}
+          onClick={() => setIndex(locationId)}
+          selected={locationId === index}
         />
       ))}
     </div>

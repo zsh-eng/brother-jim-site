@@ -1,27 +1,27 @@
-export const LOCATIONS: LocationData[] = [
-  {
+export const LOCATIONS: { [key in LocationId]: LocationData } = {
+  25: {
     name: "UTown Pool",
     capacity: 50,
-    id: 25,
+    locationId: 25,
   },
-  {
+  41: {
     name: "USC Pool",
     capacity: 250,
-    id: 41,
+    locationId: 41,
   },
-  {
+  26: {
     name: "UTown Gym",
     capacity: 100,
-    id: 26,
+    locationId: 26,
   },
-  {
+  20: {
     name: "MPSH3 Gym",
     capacity: 50,
-    id: 20,
+    locationId: 20,
   },
-  {
+  39: {
     name: "USC Gym",
     capacity: 40,
-    id: 39,
+    locationId: 39,
   },
-];
+};

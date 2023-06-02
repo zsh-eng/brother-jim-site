@@ -23,8 +23,7 @@ import dayjs from "dayjs";
 import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
 import { Line } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "~/components/Header";
 import Sidebar from "~/components/Sidebar";
 import { api } from "~/utils/api";
@@ -44,7 +43,7 @@ ChartJS.register(
 
 const Home: NextPage = () => {
   // Set the index of the location
-  const [index, setIndex] = useState(0);
+  const [locationId, setLocationId] = useState<LocationId>(25);
 
   const options: ChartOptions = {
     responsive: true,
@@ -71,42 +70,56 @@ const Home: NextPage = () => {
         },
       },
       y: {
-        max: LOCATIONS[index]?.capacity ?? 250,
+        max: LOCATIONS[locationId].capacity,
       },
     },
   };
 
-  const crowdData = LOCATIONS.map((_, i) => {
-    return api.crowd.crowdLevel
-      .useQuery(LOCATIONS[i]?.id ?? 0)
-      .data?.map((item) => {
-        return {
-          y: item.crowd_level,
-          x: dayjs(item.timestamp).toDate(),
-        };
-      });
-  });
+  const allCrowdData = api.crowd.crowdLevel.useQuery().data ?? {};
+  const currentCrowdData: { [key in LocationId]?: number } = {};
+  for (const key of Object.keys(allCrowdData)) {
+    const locationId = parseInt(key) as LocationId;
+    const presentCrowd = allCrowdData[locationId]?.presentCrowd ?? [];
+    currentCrowdData[locationId] =
+      presentCrowd[presentCrowd.length - 1]?.crowd_level ?? 0;
+  }
 
   // Construct the data for the line graph
   const datasets = [
     {
-      label: LOCATIONS[index]?.name ?? "Location not found",
-      data: crowdData[index] ?? [],
+      label: LOCATIONS[locationId].name,
+      data:
+        allCrowdData?.[locationId]?.presentCrowd?.map(
+          ({ timestamp, crowd_level }) => {
+            return {
+              x: dayjs(timestamp).toDate(),
+              y: crowd_level,
+            };
+          }
+        ) ?? [],
       fill: "origin",
       tension: 0.4,
       pointStyle: "circle",
       backgroundColor: "rgba(23, 37, 84, 0.3)",
       borderColor: "rgba(23, 37, 84, 0.5)",
     },
-    // {
-    //   label: (LOCATIONS[index] as string) + " (Last Week)",
-    //   // data: crowdData,
-    //   fill: "origin",
-    //   tension: 0.4,
-    //   backgroundColor: "rgba(134, 118, 255, 0.1)",
-    //   borderColor: "rgba(0, 0, 0, 0)",
-    //   pointStyle: "none",
-    // },
+    {
+      label: LOCATIONS[locationId].name + " (Last Week)",
+      data:
+        allCrowdData?.[locationId]?.pastWeekCrowd?.map(
+          ({ timestamp, crowd_level }) => {
+            return {
+              x: dayjs(timestamp).add(7, "days").toDate(),
+              y: crowd_level,
+            };
+          }
+        ) ?? [],
+      fill: "origin",
+      tension: 0.4,
+      backgroundColor: "rgba(134, 118, 255, 0.1)",
+      borderColor: "rgba(0, 0, 0, 0)",
+      pointStyle: "none",
+    },
   ];
 
   const data = {
@@ -122,9 +135,9 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex h-screen w-screen">
         <Sidebar
-          index={index}
-          setIndex={setIndex}
-          currentCrowd={crowdData.map((e) => e?.[e.length - 1]?.y ?? 0)}
+          index={locationId}
+          setIndex={setLocationId}
+          currentCrowd={currentCrowdData}
         />
         <div className="relative flex h-screen w-full flex-col items-center">
           <Header />
