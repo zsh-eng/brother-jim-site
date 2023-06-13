@@ -46,7 +46,7 @@ const Home: NextPage = () => {
   // Set the index of the location
   const [locationId, setLocationId] = useState<LocationId>(25);
 
-  const options: ChartOptions = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
