@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { LOCATIONS } from "./constants";
+import { LOCATIONS } from "../components/constants";
 
 import {
   Chart as ChartJS,
@@ -46,7 +46,7 @@ const Home: NextPage = () => {
   // Set the index of the location
   const [locationId, setLocationId] = useState<LocationId>(25);
 
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

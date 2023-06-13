@@ -1,5 +1,5 @@
 import React from "react";
-import { LOCATIONS } from "~/pages/constants";
+import { LOCATIONS } from "~/components/constants";
 import CrowdCircle from "./CrowdCircle";
 import { FaMapMarkedAlt } from "react-icons/fa";
 

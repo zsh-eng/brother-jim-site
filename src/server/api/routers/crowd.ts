@@ -6,7 +6,7 @@ import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 import dayjs from "dayjs";
 
-import { LOCATIONS } from "~/pages/constants";
+import { LOCATIONS } from "~/components/constants";
 
 const client = new DynamoDBClient({
   credentials: {
