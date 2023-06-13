@@ -27,6 +27,7 @@ import { useState } from "react";
 import Header from "~/components/Header";
 import Sidebar from "~/components/Sidebar";
 import { api } from "~/utils/api";
+import QuestionButton from "~/components/FAQ";
 
 ChartJS.register(
   CategoryScale,
@@ -142,7 +143,7 @@ const Home: NextPage = () => {
         <div className="relative flex h-screen w-full flex-col items-center">
           <Header />
           <div className="mt-4 h-2/5 w-full lg:h-4/5 lg:w-4/5">
-            <div>Crowd at UTown Pool</div>
+            <QuestionButton />
             <Line
               options={options}
               data={data}
