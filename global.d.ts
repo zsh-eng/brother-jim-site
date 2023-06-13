@@ -30,3 +30,9 @@ type LocationCrowdData = {
 type CrowdApiRes = {
   [key in LocationId]?: LocationCrowdData;
 };
+
+type ModalWindow = {
+  modal: {
+    showModal: () => void;
+  };
+};

@@ -10,8 +10,7 @@ const QuestionButton = () => {
         data-tip="How does this work?"
       >
         <button
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          onClick={() => window.modal.showModal()}
+          onClick={() => (window as unknown as ModalWindow).modal.showModal()}
           className="z-20 bg-transparent text-3xl"
         >
           <FaQuestionCircle className="hover:shadow-3xl h-8 w-8 bg-transparent text-gray-500 transition-all hover:scale-110 hover:text-blue-900" />
