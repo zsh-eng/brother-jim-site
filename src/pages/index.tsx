@@ -121,7 +121,7 @@ const Home: NextPage = () => {
       tension: 0.4,
       backgroundColor: "rgba(134, 118, 255, 0.1)",
       borderColor: "rgba(0, 0, 0, 0)",
-      pointStyle: false,
+      pointStyle: false as const,
     },
   ];
 

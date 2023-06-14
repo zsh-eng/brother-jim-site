@@ -54,6 +54,8 @@ const makeQueryParams = (
 });
 
 const makePresentQuery = (locationId: LocationId) => {
+  const isBeforeStart = dayjs.tz(new Date()).hour() < START_HOUR;
+
   return makeQueryParams(
     locationId,
     dayjs
@@ -61,7 +63,9 @@ const makePresentQuery = (locationId: LocationId) => {
       .startOf("day")
       .set("hour", START_HOUR)
       .format(DATETIME_FORMAT),
-    dayjs.tz(new Date()).format(DATETIME_FORMAT)
+    isBeforeStart
+      ? dayjs.tz(new Date()).set("hour", START_HOUR).format(DATETIME_FORMAT)
+      : dayjs.tz(new Date()).format(DATETIME_FORMAT)
   );
 };
 
