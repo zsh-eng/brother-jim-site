@@ -6,7 +6,7 @@ const QuestionButton = () => {
   return (
     <>
       <div
-        className="tooltip tooltip-left absolute bottom-4 right-6 z-30 lg:right-8 lg:top-16 lg:h-min"
+        className="tooltip tooltip-left fixed bottom-4 right-6 z-30 lg:right-8 lg:top-16 lg:h-min"
         data-tip="How does this work?"
       >
         <button

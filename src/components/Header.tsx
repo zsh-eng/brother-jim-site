@@ -5,12 +5,14 @@ import { FaGithub, FaLinkedin, FaRunning } from "react-icons/fa";
 const Header: React.FC = () => {
   // A header element with Tailwind
   return (
-    <div className="z-10 flex w-full justify-between bg-blue-950 px-2 lg:px-8 py-2 text-white">
+    <div className="z-10 flex w-full justify-between bg-blue-950 px-2 py-2 text-white lg:px-8">
       <Link href="/">
         <div className="flex items-center gap-1">
           <FaRunning className="h-6 w-8" />
 
-          <h1 className="text-2xl font-bold text-white">NUS Gym</h1>
+          <h1 autoFocus className="text-2xl font-bold text-white">
+            NUS Gym
+          </h1>
         </div>
       </Link>
       <nav className="flex items-center gap-x-4 text-3xl font-semibold">
