@@ -5,8 +5,14 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
 
 import { LOCATIONS } from "~/components/constants";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Singapore");
 
 const client = new DynamoDBClient({
   credentials: {
@@ -50,20 +56,29 @@ const makeQueryParams = (
 const makePresentQuery = (locationId: LocationId) => {
   return makeQueryParams(
     locationId,
-    dayjs().startOf("day").set("hour", START_HOUR).format(DATETIME_FORMAT),
-    dayjs().format(DATETIME_FORMAT)
+    dayjs
+      .tz(new Date())
+      .startOf("day")
+      .set("hour", START_HOUR)
+      .format(DATETIME_FORMAT),
+    dayjs.tz(new Date()).format(DATETIME_FORMAT)
   );
 };
 
 const makePastQuery = (locationId: LocationId) => {
   return makeQueryParams(
     locationId,
-    dayjs()
+    dayjs
+      .tz(new Date())
       .startOf("day")
       .subtract(1, "week")
       .set("hour", START_HOUR)
       .format(DATETIME_FORMAT),
-    dayjs().startOf("day").subtract(6, "days").format(DATETIME_FORMAT)
+    dayjs
+      .tz(new Date())
+      .startOf("day")
+      .subtract(6, "days")
+      .format(DATETIME_FORMAT)
   );
 };
 

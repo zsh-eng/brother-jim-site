@@ -11,8 +11,8 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ index, setIndex, currentCrowd }) => {
   return (
-    <div className="z-0 flex h-full w-48 flex-col justify-center gap-2 bg-blue-950 p-2">
-      <div className="flex items-center py-2">
+    <div className="z-0 flex h-full w-full flex-row flex-wrap justify-start gap-2 rounded-t-3xl bg-blue-950 p-2 lg:w-48 lg:flex-col lg:justify-center lg:rounded-none">
+      <div className="flex w-full items-center py-2">
         <FaMapMarkedAlt className="h-4 w-8 text-white" />
         <div className="text-3xl font-bold text-white">Locations</div>
       </div>

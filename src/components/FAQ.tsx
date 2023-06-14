@@ -6,14 +6,14 @@ const QuestionButton = () => {
   return (
     <>
       <div
-        className="top-18 tooltip tooltip-left absolute right-12"
+        className="tooltip tooltip-left absolute bottom-4 right-6 z-30 lg:right-8 lg:top-16 lg:h-min"
         data-tip="How does this work?"
       >
         <button
           onClick={() => (window as unknown as ModalWindow).modal.showModal()}
           className="z-20 bg-transparent text-3xl"
         >
-          <FaQuestionCircle className="hover:shadow-3xl h-8 w-8 bg-transparent text-gray-500 transition-all hover:scale-110 hover:text-blue-900" />
+          <FaQuestionCircle className="hover:shadow-3xl h-12 w-12 bg-transparent text-white lg:text-gray-500 transition-all hover:scale-110 hover:text-blue-900 lg:h-8 lg:w-8" />
         </button>
       </div>
 

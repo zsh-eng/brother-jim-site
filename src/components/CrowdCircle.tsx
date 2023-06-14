@@ -20,7 +20,7 @@ const CrowdCircle: React.FC<CrowdCircleProps> = ({
     return (
       <div
         onClick={onClick}
-        className="group flex items-start justify-center gap-2 rounded-2xl bg-blue-500 px-4 py-6 shadow-md transition hover:scale-110 hover:cursor-pointer hover:shadow-lg active:scale-100"
+        className="group flex w-48 items-start justify-center gap-2 rounded-2xl bg-blue-500 px-4 py-6 shadow-md transition hover:cursor-pointer hover:shadow-lg active:scale-100 lg:w-full lg:hover:scale-110"
       >
         {location.includes("Gym") ? (
           <FaDumbbell className="h-16 w-12 text-blue-200 transition-all group-hover:text-white" />
@@ -41,7 +41,7 @@ const CrowdCircle: React.FC<CrowdCircleProps> = ({
   return (
     <div
       onClick={onClick}
-      className="group flex items-start justify-center gap-2 rounded-2xl bg-white px-4 py-6 shadow-md transition hover:scale-110 hover:cursor-pointer hover:shadow-lg active:scale-100"
+      className="group flex w-48 items-start justify-center gap-2 rounded-2xl bg-white px-4 py-6 shadow-md transition hover:cursor-pointer hover:shadow-lg active:scale-100 lg:w-full lg:hover:scale-110"
     >
       {location.includes("Gym") ? (
         <FaDumbbell className="h-16 w-12 text-gray-500 transition-all group-hover:text-blue-950" />
