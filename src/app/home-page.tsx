@@ -29,9 +29,8 @@ import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
 
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
-import Header from "~/components/Header";
+import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
-import QuestionButton from "~/components/FAQ";
 import { type Crowd } from "./page";
 
 ChartJS.register(
@@ -52,6 +51,7 @@ type Props = {
 };
 
 ChartJS.defaults.font.size = 14;
+
 function Home({ data }: Props) {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -158,17 +158,32 @@ function Home({ data }: Props) {
     },
   ];
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
     <>
-      <main className="flex h-screen w-screen flex-col-reverse overflow-scroll lg:flex-row lg:overflow-hidden">
-        <QuestionButton />
-        <Sidebar
-          index={locationId}
-          setIndex={setLocationId}
-          currentCrowd={currentCrowdData}
+      <main className="drawer flex h-screen w-screen flex-col-reverse overflow-scroll lg:flex-row lg:overflow-hidden">
+        <input
+          id="my-drawer-2"
+          type="checkbox"
+          className="drawer-toggle"
+          checked={isDrawerOpen}
         />
+        <div className="drawer-side z-20">
+          <label
+            htmlFor="my-drawer-2"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+            onClick={() => setIsDrawerOpen(false)}
+          ></label>
+          <Sidebar
+            index={locationId}
+            setIndex={setLocationId}
+            currentCrowd={currentCrowdData}
+          />
+        </div>
         <div className="relative flex h-screen min-h-[400px] w-full flex-col items-center">
-          <Header />
+          <Navbar toggleDrawer={() => setIsDrawerOpen(!isDrawerOpen)} />
           <div className="mt-4 h-4/5 w-full lg:h-4/5 lg:w-4/5">
             <Line options={options} data={{ datasets }} />
           </div>
